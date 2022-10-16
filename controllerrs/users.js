@@ -63,6 +63,10 @@ const updateUser = (req, res) => {
             res.status(400).send({ message: 'Ошибка валидации', err });
             return;
           }
+          if (err instanceof mongoose.Error.CastError) {
+            res.status(400).send({ message: 'Не корректный _id', err });
+            return;
+          }
           res.status(500).send({ message: 'На сервере произошла ошибка', err });
         });
     })
@@ -93,6 +97,10 @@ const updateAvatar = (req, res) => {
         .catch((err) => {
           if (err instanceof mongoose.Error.ValidationError) {
             res.status(400).send({ message: 'Ошибка валидации', err });
+            return;
+          }
+          if (err instanceof mongoose.Error.CastError) {
+            res.status(400).send({ message: 'Не корректный _id', err });
             return;
           }
           res.status(500).send({ message: 'На сервере произошла ошибка', err });
