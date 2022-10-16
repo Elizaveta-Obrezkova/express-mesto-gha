@@ -25,10 +25,13 @@ const getCards = (req, res) => {
     });
 };
 
-const getCardById = (req, res) => {
+const deleteCard = (req, res) => {
   Card.findById(req.params.cardId).orFail(new Error('Not Found'))
-    .then((card) => {
-      res.send(card);
+    .then(() => {
+      Card.findByIdAndRemove(req.params.cardId)
+        .then((card) => {
+          res.send(card);
+        });
     })
     .catch((err) => {
       if (err.message === 'Not Found') {
@@ -96,7 +99,7 @@ const dislikeCard = (req, res) => {
 module.exports = {
   createCard,
   getCards,
-  getCardById,
+  deleteCard,
   likeCard,
   dislikeCard,
 };
