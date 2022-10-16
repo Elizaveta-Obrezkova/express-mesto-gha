@@ -57,6 +57,13 @@ const updateUser = (req, res) => {
       )
         .then((newUser) => {
           res.send(newUser);
+        })
+        .catch((err) => {
+          if (err instanceof mongoose.Error.ValidationError) {
+            res.status(400).send({ message: 'Ошибка валидации', err });
+            return;
+          }
+          res.status(500).send({ message: 'На сервере произошла ошибка', err });
         });
     })
     .catch((err) => {
@@ -82,6 +89,13 @@ const updateAvatar = (req, res) => {
       )
         .then((newUser) => {
           res.send(newUser);
+        })
+        .catch((err) => {
+          if (err instanceof mongoose.Error.ValidationError) {
+            res.status(400).send({ message: 'Ошибка валидации', err });
+            return;
+          }
+          res.status(500).send({ message: 'На сервере произошла ошибка', err });
         });
     })
     .catch((err) => {
