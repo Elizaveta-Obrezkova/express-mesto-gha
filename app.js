@@ -23,6 +23,20 @@ app.use('/users', usersRouter);
 
 app.use('/cards', cardsRouter);
 
+app.use(async (req, res) => {
+  try {
+    const route = require(`.${req.path}`)[req.method];
+    try {
+      const result = route(req);
+      res.send(result);
+    } catch (err) {
+      res.status(500).send({ message: 'На сервере призошла ошибка', err });
+    }
+  } catch (err) {
+    res.status(404).send({ message: 'Запрос не может быть обработан. Неправильный путь.', err });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
