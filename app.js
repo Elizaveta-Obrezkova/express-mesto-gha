@@ -25,7 +25,7 @@ app.use('/cards', cardsRouter);
 
 app.use(async (req, res) => {
   try {
-    const route = require(`.${req.path}`)[req.method];
+    const route = req.params.path.method;
     try {
       const result = route(req);
       res.send(result);
