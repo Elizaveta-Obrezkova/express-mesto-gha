@@ -8,10 +8,10 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации', err });
+        res.status(400).send({ message: 'Ошибка валидации' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -22,10 +22,10 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации', err });
+        res.status(400).send({ message: 'Ошибка валидации' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -40,74 +40,56 @@ const getUserById = (req, res) => {
         return;
       }
       if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
+        res.status(400).send({ message: 'Не корректный _id' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
 const updateUser = (req, res) => {
-  User.findById(req.user._id).orFail(new Error('Not Found'))
-    .then(() => {
-      User.findByIdAndUpdate(
-        req.user._id,
-        { name: req.body.name, about: req.body.about },
-        { new: true, runValidators: true },
-      )
-        .then((newUser) => {
-          res.send(newUser);
-        })
-        .catch((err) => {
-          if (err instanceof mongoose.Error.ValidationError) {
-            res.status(400).send({ message: 'Ошибка валидации', err });
-            return;
-          }
-          res.status(500).send({ message: 'На сервере произошла ошибка', err });
-        });
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name: req.body.name, about: req.body.about },
+    { new: true, runValidators: true },
+  )
+    .orFail(new Error('Not Found'))
+    .then((newUser) => {
+      res.send(newUser);
     })
     .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(400).send({ message: 'Ошибка валидации' });
+        return;
+      }
       if (err.message === 'Not Found') {
         res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
         return;
       }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
 const updateAvatar = (req, res) => {
-  User.findById(req.user._id).orFail(new Error('Not Found'))
-    .then(() => {
-      User.findByIdAndUpdate(
-        req.user._id,
-        { avatar: req.body.avatar },
-        { new: true, runValidators: true },
-      )
-        .then((newUser) => {
-          res.send(newUser);
-        })
-        .catch((err) => {
-          if (err instanceof mongoose.Error.ValidationError) {
-            res.status(400).send({ message: 'Ошибка валидации', err });
-            return;
-          }
-          res.status(500).send({ message: 'На сервере произошла ошибка', err });
-        });
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: req.body.avatar },
+    { new: true, runValidators: true },
+  )
+    .orFail(new Error('Not Found'))
+    .then((newUser) => {
+      res.send(newUser);
     })
     .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(400).send({ message: 'Ошибка валидации' });
+        return;
+      }
       if (err.message === 'Not Found') {
         res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
         return;
       }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 

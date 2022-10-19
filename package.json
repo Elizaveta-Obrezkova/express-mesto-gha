@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "lint": "npx eslint"
+    "lint": "npx eslint . --ext .js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Elizaveta-Obrezkova/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "Elizaveta Obrezkova",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Elizaveta-Obrezkova/express-mesto-gha/issues"

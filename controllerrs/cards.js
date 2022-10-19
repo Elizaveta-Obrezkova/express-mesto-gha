@@ -8,10 +8,10 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации', err });
+        res.status(400).send({ message: 'Ошибка валидации' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -20,8 +20,8 @@ const getCards = (req, res) => {
     .then((cards) => {
       res.send(cards);
     })
-    .catch((err) => {
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -39,10 +39,10 @@ const deleteCard = (req, res) => {
         return;
       }
       if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
+        res.status(400).send({ message: 'Не корректный _id' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -64,10 +64,10 @@ const likeCard = (req, res) => {
         return;
       }
       if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
+        res.status(400).send({ message: 'Не корректный _id' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -89,10 +89,10 @@ const dislikeCard = (req, res) => {
         return;
       }
       if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id', err });
+        res.status(400).send({ message: 'Не корректный _id' });
         return;
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка', err });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
