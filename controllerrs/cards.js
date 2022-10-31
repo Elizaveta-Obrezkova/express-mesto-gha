@@ -1,53 +1,40 @@
-const mongoose = require('mongoose');
 const Card = require('../models/cards');
+const NotFoundError = require('../errors/not-found-err');
+const NoAccessError = require('../errors/no-access-err');
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   Card.create({ name: req.body.name, link: req.body.link, owner: req.user._id })
     .then((card) => {
       res.status(201).send(card);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
       res.send(cards);
     })
-    .catch(() => {
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
-  Card.findById(req.params.cardId).orFail(new Error('Not Found'))
-    .then(() => {
+const deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId).orFail(new NotFoundError('Карточка с указанным _id не найдена'))
+    .then((card) => {
+      console.log(card.owner);
+      if (card.owner !== req.user._id) {
+        throw new NoAccessError('Недостаточно прав для удаления чужой карточки');
+      }
       Card.findByIdAndRemove(req.params.cardId)
-        .then((card) => {
-          res.send(card);
+        .then((deletecard) => {
+          res.send(deletecard);
         });
     })
-    .catch((err) => {
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const likeCard = (req, res) => {
-  Card.findById(req.params.cardId).orFail(new Error('Not Found'))
+const likeCard = (req, res, next) => {
+  Card.findById(req.params.cardId).orFail(new NotFoundError('Карточка с указанным _id не найдена'))
     .then(() => {
       Card.findByIdAndUpdate(
         req.params.cardId,
@@ -58,21 +45,11 @@ const likeCard = (req, res) => {
           res.send(newCard);
         });
     })
-    .catch((err) => {
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
-  Card.findById(req.params.cardId).orFail(new Error('Not Found'))
+const dislikeCard = (req, res, next) => {
+  Card.findById(req.params.cardId).orFail(new NotFoundError('Карточка с указанным _id не найдена'))
     .then(() => {
       Card.findByIdAndUpdate(
         req.params.cardId,
@@ -83,17 +60,7 @@ const dislikeCard = (req, res) => {
           res.send(newCard);
         });
     })
-    .catch((err) => {
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-        return;
-      }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
 module.exports = {

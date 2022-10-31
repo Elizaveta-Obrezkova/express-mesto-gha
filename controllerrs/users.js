@@ -1,102 +1,106 @@
-const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+const NotFoundError = require('../errors/not-found-err');
 
-const createUser = (req, res) => {
-  User.create(req.body)
+const JWT_SECRET = 'eb28135ebcfc17578f96d4d65b6c7871f2c803be4180c165061d5c2db621c51b';
+
+function login(req, res, next) {
+  const { email, password } = req.body;
+  User.findOne({ email }).select('+password').orFail(new NotFoundError('Неправильное email или пароль'))
+    .then((user) => {
+      bcrypt.compare(password, user.password);
+      return user;
+    })
+    .then((user) => {
+      console.log(user);
+      const token = jwt.sign(
+        { _id: user._id },
+        JWT_SECRET,
+        { expiresIn: '7d' },
+      );
+      console.log(token);
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        })
+        .end();
+    })
+    .catch(next);
+}
+
+const createUser = (req, res, next) => {
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+      email: req.body.email,
+      password: hash,
+    }))
     .then((user) => {
       res.status(201).send(user);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
-  User.findById(req.params.userId).orFail(new Error('Not Found'))
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId).orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
-        return;
-      }
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: 'Не корректный _id' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const updateUser = (req, res) => {
+const getUserInfo = (req, res, next) => {
+  User.findById(req.user._id).orFail(new NotFoundError('Пользователь с указанным _id не найден'))
+    .then((user) => {
+      res.send(user);
+    })
+    .catch(next);
+};
+
+const updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name: req.body.name, about: req.body.about },
     { new: true, runValidators: true },
   )
-    .orFail(new Error('Not Found'))
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((newUser) => {
       res.send(newUser);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации' });
-        return;
-      }
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar: req.body.avatar },
     { new: true, runValidators: true },
   )
-    .orFail(new Error('Not Found'))
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден'))
     .then((newUser) => {
       res.send(newUser);
     })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: 'Ошибка валидации' });
-        return;
-      }
-      if (err.message === 'Not Found') {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
-        return;
-      }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch(next);
 };
 
 module.exports = {
+  login,
   createUser,
   getUser,
   getUserById,
+  getUserInfo,
   updateUser,
   updateAvatar,
 };
