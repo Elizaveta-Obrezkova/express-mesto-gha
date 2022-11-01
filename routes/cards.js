@@ -18,20 +18,20 @@ router.post('/', celebrate({
 router.get('/', getCards);
 
 router.delete('/:cardId', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
   }),
 }), deleteCard);
 
 router.put('/:cardId/likes', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
   }),
 }), likeCard);
 
 router.delete('/:cardId/likes', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
   }),
 }), dislikeCard);
 

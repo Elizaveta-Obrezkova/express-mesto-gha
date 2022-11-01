@@ -13,8 +13,8 @@ router.get('/', getUser);
 router.get('/me', getUserInfo);
 
 router.get('/:userId', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
   }),
 }), getUserById);
 
