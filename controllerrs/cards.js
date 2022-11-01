@@ -21,8 +21,8 @@ const getCards = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId).orFail(new NotFoundError('Карточка с указанным _id не найдена'))
     .then((card) => {
-      console.log(card.owner);
-      if (card.owner !== req.user._id) {
+      console.log(JSON.stringify(card.owner));
+      if (!JSON.stringify(card.owner).includes(req.user._id)) {
         throw new NoAccessError('Недостаточно прав для удаления чужой карточки');
       }
       Card.findByIdAndRemove(req.params.cardId)

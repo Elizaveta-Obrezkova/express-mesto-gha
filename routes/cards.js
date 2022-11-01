@@ -10,17 +10,29 @@ const {
 
 router.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string(),
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().regex(/(http|https):\/\/([\w.]+\/?)\S*/).required(),
   }),
 }), createCard);
 
 router.get('/', getCards);
 
-router.delete('/:cardId', deleteCard);
+router.delete('/:cardId', celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  }),
+}), deleteCard);
 
-router.put('/:cardId/likes', likeCard);
+router.put('/:cardId/likes', celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  }),
+}), likeCard);
 
-router.delete('/:cardId/likes', dislikeCard);
+router.delete('/:cardId/likes', celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  }),
+}), dislikeCard);
 
 module.exports = router;

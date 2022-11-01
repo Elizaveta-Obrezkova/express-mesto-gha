@@ -12,7 +12,11 @@ router.get('/', getUser);
 
 router.get('/me', getUserInfo);
 
-router.get('/:userId', getUserById);
+router.get('/:userId', celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+  }),
+}), getUserById);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({
@@ -23,7 +27,7 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string(),
+    avatar: Joi.string().regex(/(http|https):\/\/([\w.]+\/?)\S*/),
   }),
 }), updateAvatar);
 

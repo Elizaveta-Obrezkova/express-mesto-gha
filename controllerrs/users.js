@@ -2,30 +2,29 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 const NotFoundError = require('../errors/not-found-err');
+const AuthError = require('../errors/auth-err');
 
 const JWT_SECRET = 'eb28135ebcfc17578f96d4d65b6c7871f2c803be4180c165061d5c2db621c51b';
 
 function login(req, res, next) {
   const { email, password } = req.body;
-  User.findOne({ email }).select('+password').orFail(new NotFoundError('Неправильное email или пароль'))
+  User.findOne({ email }).select('+password').orFail(new AuthError('Неправильное email или пароль'))
     .then((user) => {
       bcrypt.compare(password, user.password);
       return user;
     })
     .then((user) => {
-      console.log(user);
       const token = jwt.sign(
         { _id: user._id },
         JWT_SECRET,
         { expiresIn: '7d' },
       );
-      console.log(token);
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
-        })
-        .end();
+        });
+      res.status(200).send({ massage: 'Авторизация прошла успешно' });
     })
     .catch(next);
 }
@@ -40,7 +39,13 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => {
-      res.status(201).send(user);
+      res.status(201).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
     .catch(next);
 };
