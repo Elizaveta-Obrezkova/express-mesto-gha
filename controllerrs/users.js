@@ -10,21 +10,21 @@ function login(req, res, next) {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password').orFail(new AuthError('Неправильное email или пароль'))
     .then((user) => {
-      bcrypt.compare(password, user.password);
-      return user;
-    })
-    .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        JWT_SECRET,
-        { expiresIn: '7d' },
-      );
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        });
-      res.status(200).send({ massage: 'Авторизация прошла успешно' });
+      bcrypt.compare(password, user.password)
+        .then(() => {
+          const token = jwt.sign(
+            { _id: user._id },
+            JWT_SECRET,
+            { expiresIn: '7d' },
+          );
+          res
+            .cookie('jwt', token, {
+              maxAge: 3600000 * 24 * 7,
+              httpOnly: true,
+            });
+          res.status(200).send({ massage: 'Авторизация прошла успешно' });
+        })
+        .catch(next);
     })
     .catch(next);
 }
