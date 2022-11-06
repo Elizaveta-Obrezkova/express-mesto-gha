@@ -41,9 +41,7 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use((_, res, next) => {
-  try { throw new NotFoundError('Запрос не может быть обработан. Неправильный путь.'); } catch (err) {
-    next(err);
-  }
+  next(new NotFoundError('Запрос не может быть обработан. Неправильный путь.'));
 });
 
 app.use(errors());

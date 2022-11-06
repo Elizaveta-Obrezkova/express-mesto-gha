@@ -11,7 +11,10 @@ function login(req, res, next) {
   User.findOne({ email }).select('+password').orFail(new AuthError('Неправильное email или пароль'))
     .then((user) => {
       bcrypt.compare(password, user.password)
-        .then(() => {
+        .then((matched) => {
+          if (!matched) {
+            next(new AuthError('Неправильное email или пароль'));
+          }
           const token = jwt.sign(
             { _id: user._id },
             JWT_SECRET,
