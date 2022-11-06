@@ -14,6 +14,7 @@ function login(req, res, next) {
         .then((matched) => {
           if (!matched) {
             next(new AuthError('Неправильное email или пароль'));
+            return;
           }
           const token = jwt.sign(
             { _id: user._id },
