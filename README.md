@@ -1,21 +1,11 @@
-[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-# Проект Mesto фронтенд + бэкенд
+[![Tests](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 
+# Проект Место бэкенд
 
+***
 
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
+На данном этапе для проекта **Место**, позволяющего делиться фотографиями из разных точек планеты, был написан бэкенд на Express.js. На каждом этапе разработки сервера  проект проходил автотесты, результаты которых представлены сверху.
 
-```
-[![Tests for sprint 13](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-13-sprint.yml) 
+***
 
-[![Tests for sprint 14](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/Elizaveta-Obrezkova/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
-```
-
-
-##  Ссылка на репозиторий
-
-https://github.com/Elizaveta-Obrezkova/express-mesto-gha
-
-
+Следующим этапом развития проекта будет соединение фронтенда и бэкенда на собственном сервере. А также деплой проекта.
